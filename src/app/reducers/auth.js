@@ -17,7 +17,6 @@ export const authSlice = createSlice({
 		updateUser: (state, data) => {
 			if (!state.user) return
 
-			// On peut faire ceci car en arrière, c'est reselect qui va mettre le data à la bonne place
 			state.user = {
 				...state.user,
 				...data.payload
