@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
-import { getUser } from '../reducers/auth'
+import { getUser } from '../../reducers/auth'
 import { HeaderContainer, HeaderFlexContainer, HeaderMenu, HeaderMenuItem } from './Header.styles'
 
 const getPages = (isLogged) => [

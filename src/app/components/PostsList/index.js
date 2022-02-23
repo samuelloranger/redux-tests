@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Post from './Post'
+import Post from '../Post'
 import { PostListContainer } from './PostsList.styles'
 
 export default function PostsList ({ posts }){

@@ -1,14 +1,17 @@
 import { Fragment, useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { fetchPosts, getLoading, getPostsList, getError } from '../../reducers/posts'
-import PostsList from '../../components/PostsList'
-import PostsPerAuthor from '../../components/PostsByAuthor'
-import { PostTypeSelector, PostTypeSelectorContainer } from './Posts.styles'
 import { Link, useLocation } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+
+import { fetchPosts, getLoading, getPostsList, getError, getAuthorsList } from '../../reducers/posts'
+
+import PostsList from '../../components/PostsList'
+import PostByAuthor from '../../components/PostByAuthor/PostByAuthor'
+import { PostTypeSelector, PostTypeSelectorContainer } from './Posts.styles'
 
 export default function Posts (){
 	const { hash } = useLocation()
 	const posts = useSelector(getPostsList)
+	const authors = useSelector(getAuthorsList)
 	const loading = useSelector(getLoading)
 	const error = useSelector(getError)
 	const dispatch = useDispatch()
@@ -49,7 +52,11 @@ export default function Posts (){
 						</PostTypeSelector>
 					</PostTypeSelectorContainer>
 
-					{activeTab === 'all' ? <PostsList posts={posts} /> : <PostsPerAuthor />}
+					{activeTab === 'all' ? (
+						<PostsList posts={posts} />
+					) : (
+						<div>{authors.map((author) => <PostByAuthor author={author} key={author.id} />)}</div>
+					)}
 				</Fragment>
 			)}
 		</div>

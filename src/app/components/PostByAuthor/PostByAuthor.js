@@ -1,8 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { getPostsByAuthor } from '../reducers/posts'
+import { getPostsByAuthor } from '../../reducers/posts'
 import { AuthorTitle } from './PostByAuthor.styles'
-import PostsList from './PostsList'
+import PostsList from '../PostsList'
 
 function PostByAuthor ({ author }){
 	const posts = useSelector(getPostsByAuthor(author.id))
