@@ -61,6 +61,7 @@ const getError = (state) => state.posts.error
 const { generate, normalizeData, setFetching, setFetchingSuccess, setFetchingError } = postsSlice.actions
 
 const fetchPosts = () => async (dispatch) => {
+	console.log('allo')
 	dispatch(setFetching())
 	try {
 		await new Promise((resolve) => setTimeout(resolve, 2500))

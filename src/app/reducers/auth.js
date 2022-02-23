@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { signInWithEmailAndPassword, signOut, getAuth } from 'firebase/auth'
+import { signInWithEmailAndPassword, signOut, getAuth, updateProfile } from 'firebase/auth'
 import { app } from '../utils/firebase'
 
 export const authSlice = createSlice({
@@ -7,11 +7,21 @@ export const authSlice = createSlice({
 	initialState: {
 		user: null,
 		loading: false,
+		updatingUser: false,
 		error: null
 	},
 	reducers: {
 		setUser: (state, data) => {
 			state.user = data.payload
+		},
+		updateUser: (state, data) => {
+			if (!state.user) return
+
+			// On peut faire ceci car en arrière, c'est reselect qui va mettre le data à la bonne place
+			state.user = {
+				...state.user,
+				...data.payload
+			}
 		},
 		setFetching: (state) => {
 			state.loading = true
@@ -24,20 +34,15 @@ export const authSlice = createSlice({
 			state.loading = false
 			state.error = data.payload
 		},
-		setDisplayName: (state, data) => {
-			if (!state.user) return
-
-			// redux sans reselect de redux toolkit
-			// return {
-			// 	...state,
-			// 	user: {
-			// 		...state.user,
-			// 		displayName: data.payload
-			// 	}
-			// }
-
-			// On peut faire ceci car en arrière, c'est reselect qui va mettre le data à la bonne place
-			state.user.displayName = data.payload
+		setLoadingUserUpdate: (state, data) => {
+			state.updatingUser = true
+		},
+		setLoadingUserUpdateSuccess: (state) => {
+			state.updatingUser = false
+		},
+		setLoadingUserUpdateError: (state, data) => {
+			state.updatingUser = false
+			state.error = data.payload
 		}
 	}
 })
@@ -45,8 +50,34 @@ export const authSlice = createSlice({
 const getUser = (state) => state.auth.user
 const getError = (state) => state.auth.error
 const getLoading = (state) => state.auth.loading
+const getLoadingUserUpdate = (state) => state.auth.updatingUser
 
-const { setUser, setError, setDisplayName, setFetching, setFetchingError, setFetchingSuccess } = authSlice.actions
+const {
+	setUser,
+	updateUser,
+	setError,
+	setFetching,
+	setFetchingError,
+	setFetchingSuccess,
+	setLoadingUserUpdate,
+	setLoadingUserUpdateSuccess,
+	setLoadingUserUpdateError
+} = authSlice.actions
+
+const setDisplayName = (name) => async (dispatch) => {
+	dispatch(setLoadingUserUpdate(true))
+
+	try {
+		const auth = getAuth(app)
+		await updateProfile(auth.currentUser, {
+			displayName: name
+		})
+		dispatch(updateUser({ displayName: name }))
+		dispatch(setLoadingUserUpdateSuccess(true))
+	} catch (err) {
+		dispatch(setLoadingUserUpdateError(true))
+	}
+}
 
 const login = (email, password) => async (dispatch) => {
 	dispatch(setFetching())
@@ -60,6 +91,18 @@ const login = (email, password) => async (dispatch) => {
 
 const logout = () => async () => await signOut(getAuth(app))
 
-export { getUser, getError, getLoading, login, logout, setUser, setError, setDisplayName }
+export {
+	getUser,
+	getError,
+	getLoading,
+	getLoadingUserUpdate,
+	login,
+	logout,
+	setDisplayName,
+	setUser,
+	setError,
+	setLoadingUserUpdateSuccess,
+	setLoadingUserUpdateError
+}
 
 export default authSlice.reducer

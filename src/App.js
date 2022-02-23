@@ -13,9 +13,11 @@ import Posts from './app/pages/Posts'
 
 // Contexts/Reducers
 import { setUser } from './app/reducers/auth'
+
+// Components/Pages
+import Header from './app/components/Header'
 import Auth from './app/pages/Auth'
 import Home from './app/pages/Home'
-import Header from './app/components/Header'
 import Post from './app/pages/Post'
 
 function App (){

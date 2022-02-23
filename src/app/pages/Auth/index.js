@@ -1,14 +1,15 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Button from '../components/Button'
-import Input from '../components/Input'
-import { getError, getLoading, getUser, login, logout, setDisplayName } from '../reducers/auth'
+import Button from '../../components/Button'
+import Input from '../../components/Input'
+import { getError, getLoading, getUser, login, logout, setDisplayName, getLoadingUserUpdate } from '../../reducers/auth'
 import { LoginFormContainer, LoginFormElement } from './Auth.styles'
 
 export default function Auth (){
 	const user = useSelector(getUser)
 	const error = useSelector(getError)
 	const loading = useSelector(getLoading)
+	const loadingUserUpdate = useSelector(getLoadingUserUpdate)
 	const dispatch = useDispatch()
 
 	const [ authForm, setAuthForm ] = useState({ email: '', password: '' })
@@ -61,12 +62,13 @@ export default function Auth (){
 					<LoginFormElement noMaxWidth>
 						<Button
 							aria-label='Logout'
+							disabled={loadingUserUpdate}
 							onClick={() => {
 								console.log('userForm.displayName', userForm.displayName)
 								dispatch(setDisplayName(userForm.displayName))
 							}}
 							style={{ marginBottom: 24 }}>
-							Change display name
+							{loadingUserUpdate ? 'Setting display name...' : 'Change display name'}
 						</Button>
 					</LoginFormElement>
 
@@ -107,6 +109,7 @@ export default function Auth (){
 						<LoginFormElement>
 							<Button
 								aria-label='Login'
+								disabled={loading}
 								onClick={() => dispatch(login(authForm.email, authForm.password))}>
 								{loading ? 'Logging in...' : 'Login'}
 							</Button>

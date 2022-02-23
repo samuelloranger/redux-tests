@@ -1,11 +1,10 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchPosts, getLoading, getPostsList } from '../reducers/posts'
-import PostsList from '../components/PostsList'
-import PostsPerAuthor from '../components/PostsByAuthor'
+import { fetchPosts, getLoading, getPostsList, getError } from '../../reducers/posts'
+import PostsList from '../../components/PostsList'
+import PostsPerAuthor from '../../components/PostsByAuthor'
 import { PostTypeSelector, PostTypeSelectorContainer } from './Posts.styles'
 import { Link, useLocation } from 'react-router-dom'
-import { getError } from '../reducers/posts'
 
 export default function Posts (){
 	const { hash } = useLocation()
